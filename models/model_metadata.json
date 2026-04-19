@@ -1,0 +1,13 @@
+{
+    "version": "2.0",
+    "capabilities": [
+        "text_input",
+        "image_input",
+        "ocr_extraction"
+    ],
+    "accuracy": 0.9234411996842936,
+    "training_samples": 5067,
+    "vocab_size": 5000,
+    "ocr_engine": "tesseract",
+    "created_date": "2026-03-02 08:39:08.579221"
+}

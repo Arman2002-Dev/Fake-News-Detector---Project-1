@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕵️ Fake News Detector</h1>
+            <p>Upload news image or enter text to analyze</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('text')">📝 Text</button>
+            <button class="tab-btn" onclick="switchTab('image')">🖼️ Image</button>
+        </div>
+
+        <!-- Text Input -->
+        <div id="text-section" class="section active">
+            <input type="text" id="title" placeholder="News Title">
+            <textarea id="content" rows="6" placeholder="News content..."></textarea>
+            <button class="btn" onclick="analyzeText()">Analyze Text</button>
+        </div>
+
+        <!-- Image Input -->
+        <div id="image-section" class="section">
+            <div class="upload-box" onclick="document.getElementById('file-input').click()">
+                <p>📤 Click to upload image</p>
+                <p class="hint">or drag & drop</p>
+                <input type="file" id="file-input" accept="image/*" hidden onchange="handleImage(event)">
+            </div>
+            <div id="preview" class="preview hidden">
+                <img id="preview-img">
+                <button class="remove-btn" onclick="removeImage()">✕</button>
+            </div>
+            <button class="btn" id="analyze-img-btn" onclick="analyzeImage()" disabled>Analyze Image</button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing...</p>
+        </div>
+
+        <!-- Results -->
+        <div id="result" class="result hidden">
+            <div id="verdict" class="verdict"></div>
+            <div class="confidence">
+                <span>Confidence: <strong id="conf-value">0%</strong></span>
+                <div class="bar"><div id="conf-bar"></div></div>
+            </div>
+            <div class="probs">
+                <div class="prob fake">Fake: <span id="fake-p">0%</span></div>
+                <div class="prob real">Real: <span id="real-p">0%</span></div>
+            </div>
+            <div id="extracted" class="extracted hidden">
+                <h4>Extracted Text:</h4>
+                <p id="extracted-text"></p>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="error hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
