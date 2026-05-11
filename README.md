@@ -171,16 +171,7 @@ Fake News Detector/
 
 ---
 
-## 👥 Developed By
-
-| Name | Roll Number |
-| --- | --- |
-| Ayesha Zubairi | 2022-GCUF-074424 |
-| Maira Tariq | 2022-GCUF-074274 |
-| Urba Tariq | 2022-GCUF-074277 |
-
-**Institution:** Government College University, Faisalabad (GCUF)
-"""
+## 👥 Developed By: Muhammad Arman
 
 with open("README.md", "w", encoding="utf-8") as f:
 f.write(readme_content)
