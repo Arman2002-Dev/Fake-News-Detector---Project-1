@@ -3,68 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake News Detector</title>
+    <title>TruthCheck — AI Fake News Detector</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🕵️ Fake News Detector</h1>
-            <p>Upload news image or enter text to analyze</p>
-        </header>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('text')">📝 Text</button>
-            <button class="tab-btn" onclick="switchTab('image')">🖼️ Image</button>
-        </div>
-
-        <!-- Text Input -->
-        <div id="text-section" class="section active">
-            <input type="text" id="title" placeholder="News Title">
-            <textarea id="content" rows="6" placeholder="News content..."></textarea>
-            <button class="btn" onclick="analyzeText()">Analyze Text</button>
-        </div>
-
-        <!-- Image Input -->
-        <div id="image-section" class="section">
-            <div class="upload-box" onclick="document.getElementById('file-input').click()">
-                <p>📤 Click to upload image</p>
-                <p class="hint">or drag & drop</p>
-                <input type="file" id="file-input" accept="image/*" hidden onchange="handleImage(event)">
+    <div class="app-container">
+        
+        <!-- ========== SIDEBAR ========== -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-text">
+                    <h3>TruthCheck</h3>
+                    <span>See Truth. Share Truth.</span>
+                </div>
             </div>
-            <div id="preview" class="preview hidden">
-                <img id="preview-img">
-                <button class="remove-btn" onclick="removeImage()">✕</button>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="home" onclick="switchPage('home')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item" data-page="detect" onclick="switchPage('detect')">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Detect News</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history" onclick="switchPage('history')">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="nav-item" data-page="saved" onclick="switchPage('saved')">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span>Saved Reports</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showHowItWorks()">
+                    <i class="fa-regular fa-circle-question"></i>
+                    <span>How It Works</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showAbout()">
+                    <i class="fa-regular fa-circle-info"></i>
+                    <span>About Us</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showContact()">
+                    <i class="fa-regular fa-envelope"></i>
+                    <span>Contact</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="fight-card">
+                    <div class="fight-icon">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <h4>Help fight misinformation</h4>
+                    <p>Verify news and make the internet a better place.</p>
+                </div>
             </div>
-            <button class="btn" id="analyze-img-btn" onclick="analyzeImage()" disabled>Analyze Image</button>
-        </div>
+        </aside>
 
-        <!-- Loading -->
-        <div id="loading" class="loading hidden">
-            <div class="spinner"></div>
-            <p>Analyzing...</p>
-        </div>
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="main-content">
+            
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="toggleTheme()">
+                        <i class="fa-regular fa-sun"></i>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <span>Guest User</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
 
-        <!-- Results -->
-        <div id="result" class="result hidden">
-            <div id="verdict" class="verdict"></div>
-            <div class="confidence">
-                <span>Confidence: <strong id="conf-value">0%</strong></span>
-                <div class="bar"><div id="conf-bar"></div></div>
-            </div>
-            <div class="probs">
-                <div class="prob fake">Fake: <span id="fake-p">0%</span></div>
-                <div class="prob real">Real: <span id="real-p">0%</span></div>
-            </div>
-            <div id="extracted" class="extracted hidden">
-                <h4>Extracted Text:</h4>
-                <p id="extracted-text"></p>
-            </div>
-        </div>
+            <!-- ========== HOME PAGE ========== -->
+            <div id="page-home" class="page active">
+                
+                <!-- Hero Section -->
+                <section class="hero-card">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            AI POWERED NEWS VERIFICATION
+                        </div>
+                        <h1 class="hero-title">
+                            Detect <span class="text-blue">Fake News</span><br>
+                            in Seconds
+                        </h1>
+                        <p class="hero-desc">
+                            Paste news article text or URL and let our AI tell you the truth.
+                        </p>
+                        
+                        <!-- Input Area -->
+                        <div class="detect-input-wrapper">
+                            <div class="input-tabs">
+                                <button class="input-tab active" onclick="switchInputMode('url')">
+                                    <i class="fa-solid fa-link"></i> URL
+                                </button>
+                                <button class="input-tab" onclick="switchInputMode('text')">
+                                    <i class="fa-solid fa-align-left"></i> Text
+                                </button>
+                                <button class="input-tab" onclick="switchInputMode('image')">
+                                    <i class="fa-regular fa-image"></i> Image
+                                </button>
+                            </div>
+                            
+                            <div class="detect-box">
+                                <div id="url-input" class="input-panel active">
+                                    <div class="input-row">
+                                        <i class="fa-solid fa-link input-icon"></i>
+                                        <input type="text" id="url-field" placeholder="Paste news article URL here...">
+                                        <span class="or-divider">OR</span>
+                                        <button class="paste-btn" onclick="switchInputMode('text')">
+                                            <i class="fa-regular fa-paste"></i> Paste Text
+                                        </button>
+                                        <button class="analyze-btn-main" onclick="analyzeFromHome()">
+                                            Analyze News <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="text-input-panel" class="input-panel">
+                                    <input type="text" id="home-title" placeholder="News Title" class="home-title-input">
+                                    <textarea id="home-content" placeholder="Paste the article content here..." rows="4"></textarea>
+                                    <div class="panel-actions">
+                                        <button class="secondary-btn" onclick="switchInputMode('url')">
+                                            <i class="fa-solid fa-link"></i> Use URL
+                                        </button>
+                                        <button class="analyze-btn-main" onclick="analyzeTextFromHome()">
+                                            Analyze News <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="image-input-panel" class="input-panel">
+                                    <div class="home-upload" onclick="document.getElementById('home-file').click()">
+                                        <input type="file" id="home-file" accept="image/*" hidden onchange="handleHomeImage(event)">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <p>Drop image here or click to browse</p>
+                                        <span>JPG, PNG up to 10MB</span>
+                                    </div>
+                                    <div id="home-img-preview" class="home-preview hidden">
+                                        <img id="home-preview-img">
+                                        <button class="remove-home-img" onclick="removeHomeImage()">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
+                                    <div class="panel-actions">
+                                        <button class="secondary-btn" onclick="switchInputMode('url')">
+                                            <i class="fa-solid fa-link"></i> Use URL
+                                        </button>
+                                        <button class="analyze-btn-main" id="home-analyze-img" onclick="analyzeHomeImage()" disabled>
+                                            Analyze Image <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-illustration">
+                        <div class="news-card-illustration">
+                            <div class="news-header">NEWS</div>
+                            <div class="news-lines">
+                                <div class="line"></div>
+                                <div class="line short"></div>
+                                <div class="line"></div>
+                            </div>
+                            <div class="magnifier">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <div class="check-mark">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-        <!-- Error -->
-        <div id="error" class="error hidden"></div>
+                <!-- Features Grid -->
+                <section class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon green">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Accurate Results</h4>
+                            <p>Advanced AI model delivers high accuracy</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon purple">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Instant Analysis</h4>
+                            <p>Get results in just a few seconds</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon blue">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>100% Secure</h4>
+                            <p>Your data is safe with us</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon orange">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>For Everyone</h4>
+                            <p>Simple, easy and free for all users</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom Section -->
+                <div class="bottom-section">
+                    <!-- How It Works -->
+                    <section class="how-it-works">
+                        <h3 class="section-title">How It Works</h3>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-icon">
+                                    <i class="fa-regular fa-paste"></i>
+                                </div>
+                                <h4>Enter News</h4>
+                                <p>Paste URL or news article text</p>
+                            </div>
+                            <div class="step-connector">
+                                <div class="dots"></div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-icon">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h4>AI Analyzes</h4>
+                                <p>Our AI scans and analyzes the content</p>
+                            </div>
+                            <div class="step-connector">
+                                <div class="dots"></div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <h4>Get Result</h4>
+                                <p>Receive result with confidence score</p>
+                            </div>
+                        </div>
+                        <a href="#" class="learn-more" onclick="showHowItWorks()">
+                            Learn more about our AI model <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </section>
+
+                    <!-- Recent Checks -->
+                    <section class="recent-checks">
+                        <div class="recent-header">
+                            <h3 class="section-title">Recent Checks</h3>
+                            <a href="#" class="view-all" onclick="switchPage('history')">View All</a>
+                        </div>
+                        <div class="checks-list" id="recent-checks-list">
+                            <div class="check-item empty">
+                                <p>No recent checks. Start analyzing news!</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ========== DETECT PAGE (Full) ========== -->
+            <div id="page-detect" class="page">
+                <div class="page-header">
+                    <h2>Detect News</h2>
+                    <p>Analyze news articles for authenticity</p>
+                </div>
+                
+                <div class="detect-full-card">
+                    <div class="full-tabs">
+                        <button class="full-tab active" onclick="switchFullMode('text')">
+                            <i class="fa-solid fa-keyboard"></i> Text Analysis
+                        </button>
+                        <button class="full-tab" onclick="switchFullMode('image')">
+                            <i class="fa-regular fa-image"></i> Image Analysis
+                        </button>
+                    </div>
+                    
+                    <div id="full-text-panel" class="full-panel active">
+                        <div class="form-group">
+                            <label>News Title</label>
+                            <input type="text" id="detect-title" placeholder="Enter news headline...">
+                        </div>
+                        <div class="form-group">
+                            <label>News Content</label>
+                            <textarea id="detect-content" rows="8" placeholder="Paste the full article content here..."></textarea>
+                        </div>
+                        <button class="analyze-btn-main large" onclick="analyzeFullText()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze News
+                        </button>
+                    </div>
+                    
+                    <div id="full-image-panel" class="full-panel">
+                        <div class="full-upload" onclick="document.getElementById('full-file').click()">
+                            <input type="file" id="full-file" accept="image/*" hidden onchange="handleFullImage(event)">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>Upload news screenshot or image</p>
+                            <span>We'll extract text and analyze it</span>
+                        </div>
+                        <div id="full-preview" class="full-preview hidden">
+                            <img id="full-preview-img">
+                        </div>
+                        <button class="analyze-btn-main large" id="full-analyze-btn" onclick="analyzeFullImage()" disabled>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HISTORY PAGE ========== -->
+            <div id="page-history" class="page">
+                <div class="page-header">
+                    <h2>History</h2>
+                    <p>All your past fact-checks</p>
+                </div>
+                
+                <div class="history-stats-row">
+                    <div class="h-stat">
+                        <span class="h-stat-value" id="hist-total">0</span>
+                        <span class="h-stat-label">Total Checks</span>
+                    </div>
+                    <div class="h-stat">
+                        <span class="h-stat-value" id="hist-fake">0</span>
+                        <span class="h-stat-label">Fake Detected</span>
+                    </div>
+                    <div class="h-stat">
+                        <span class="h-stat-value" id="hist-real">0</span>
+                        <span class="h-stat-label">Real Verified</span>
+                    </div>
+                    <div class="h-stat">
+                        <span class="h-stat-value" id="hist-today">0</span>
+                        <span class="h-stat-label">Today</span>
+                    </div>
+                </div>
+                
+                <div class="history-filters-bar">
+                    <div class="h-filters">
+                        <button class="h-filter active" onclick="filterHistory('all')">All</button>
+                        <button class="h-filter" onclick="filterHistory('text')">Text</button>
+                        <button class="h-filter" onclick="filterHistory('image')">Image</button>
+                    </div>
+                    <button class="clear-history-btn" onclick="clearAllHistory()">
+                        <i class="fa-solid fa-trash"></i> Clear All
+                    </button>
+                </div>
+                
+                <div class="history-table" id="history-table">
+                    <div class="history-empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>No history yet. Start checking news!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== RESULTS OVERLAY ========== -->
+            <div id="result-overlay" class="result-overlay hidden">
+                <div class="result-modal">
+                    <button class="close-modal" onclick="closeResult()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div class="result-header">
+                        <div class="result-icon" id="res-icon">✨</div>
+                        <h2 id="res-title">Analysis Complete</h2>
+                        <p id="res-subtitle">Here is what we found</p>
+                    </div>
+                    
+                    <div class="result-verdict" id="res-verdict">
+                        <div class="verdict-badge" id="res-badge">REAL NEWS</div>
+                        <div class="confidence-display">
+                            <span class="conf-label">Confidence</span>
+                            <span class="conf-value" id="res-confidence">85%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-bars">
+                        <div class="r-bar-row">
+                            <span>Fake Probability</span>
+                            <div class="r-bar-track">
+                                <div class="r-bar-fill fake" id="res-fake-bar" style="width: 15%"></div>
+                            </div>
+                            <span id="res-fake-p">15%</span>
+                        </div>
+                        <div class="r-bar-row">
+                            <span>Real Probability</span>
+                            <div class="r-bar-track">
+                                <div class="r-bar-fill real" id="res-real-bar" style="width: 85%"></div>
+                            </div>
+                            <span id="res-real-p">85%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions-row">
+                        <button class="res-btn secondary" onclick="closeResult()">
+                            <i class="fa-solid fa-rotate-left"></i> Check Another
+                        </button>
+                        <button class="res-btn primary" onclick="shareResult()">
+                            <i class="fa-solid fa-share-nodes"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" class="loading-overlay hidden">
+                <div class="loading-box">
+                    <div class="spinner-ring"></div>
+                    <p>Analyzing with AI...</p>
+                    <span>Checking sources, tone & credibility</span>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="app-footer">
+                <p>© 2026 TruthCheck. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                </div>
+            </footer>
+        </main>
     </div>
 
     <script src="script.js"></script>

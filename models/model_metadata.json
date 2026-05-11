@@ -5,9 +5,9 @@
         "image_input",
         "ocr_extraction"
     ],
-    "accuracy": 0.9234411996842936,
-    "training_samples": 5067,
-    "vocab_size": 5000,
+    "accuracy": 1.0,
+    "training_samples": 417,
+    "vocab_size": 4053,
     "ocr_engine": "tesseract",
-    "created_date": "2026-03-02 08:39:08.579221"
+    "created_date": "2026-05-10 18:09:12.098857"
 }

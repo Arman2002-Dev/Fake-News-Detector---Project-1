@@ -1,171 +1,321 @@
-// Global variables
-let selectedImage = null;
+// ===== STATE =====
+let selectedHomeImage = null;
+let selectedFullImage = null;
+let currentResult = null;
+let currentFilter = 'all';
 
-// Switch tabs
-function switchTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+const API_BASE = 'http://localhost:5000';
+
+// ===== PAGE SWITCHING =====
+function switchPage(page) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.page === page);
+    });
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page)?.classList.add('active');
     
-    event.target.classList.add('active');
-    document.getElementById(tab + '-section').classList.add('active');
-    
-    hideResults();
+    if (page === 'history') loadHistory();
+    if (page === 'home') loadRecentChecks();
 }
 
-// Handle image selection
-function handleImage(event) {
+// ===== INPUT MODE SWITCHING (Home) =====
+function switchInputMode(mode) {
+    document.querySelectorAll('.input-tab').forEach(tab => tab.classList.remove('active'));
+    event.target.closest('.input-tab')?.classList.add('active');
+    
+    document.querySelectorAll('.input-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(mode + '-input-panel')?.classList.add('active');
+    if (mode === 'url') document.getElementById('url-input')?.classList.add('active');
+}
+
+// ===== FULL MODE SWITCHING =====
+function switchFullMode(mode) {
+    document.querySelectorAll('.full-tab').forEach(tab => tab.classList.remove('active'));
+    event.target.closest('.full-tab')?.classList.add('active');
+    
+    document.querySelectorAll('.full-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('full-' + mode + '-panel')?.classList.add('active');
+}
+
+// ===== HOME IMAGE =====
+function handleHomeImage(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
     const reader = new FileReader();
-    reader.onload = function(e) {
-        selectedImage = e.target.result;
-        document.getElementById('preview-img').src = selectedImage;
-        document.getElementById('preview').classList.remove('hidden');
-        document.querySelector('.upload-box').classList.add('hidden');
-        document.getElementById('analyze-img-btn').disabled = false;
-        hideResults();
+    reader.onload = e => {
+        selectedHomeImage = e.target.result;
+        document.getElementById('home-preview-img').src = selectedHomeImage;
+        document.getElementById('home-img-preview').classList.remove('hidden');
+        document.getElementById('home-analyze-img').disabled = false;
     };
     reader.readAsDataURL(file);
 }
 
-// Remove image
-function removeImage() {
-    selectedImage = null;
-    document.getElementById('file-input').value = '';
-    document.getElementById('preview').classList.add('hidden');
-    document.querySelector('.upload-box').classList.remove('hidden');
-    document.getElementById('analyze-img-btn').disabled = true;
-    hideResults();
+function removeHomeImage() {
+    selectedHomeImage = null;
+    document.getElementById('home-file').value = '';
+    document.getElementById('home-img-preview').classList.add('hidden');
+    document.getElementById('home-analyze-img').disabled = true;
 }
 
-// Hide all results
-function hideResults() {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('result').classList.add('hidden');
-    document.getElementById('error').classList.add('hidden');
+// ===== FULL IMAGE =====
+function handleFullImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        selectedFullImage = e.target.result;
+        document.getElementById('full-preview-img').src = selectedFullImage;
+        document.getElementById('full-preview').classList.remove('hidden');
+        document.getElementById('full-analyze-btn').disabled = false;
+    };
+    reader.readAsDataURL(file);
 }
 
-// Show loading
+// ===== ANALYSIS FUNCTIONS =====
 function showLoading() {
-    hideResults();
-    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('loading-overlay').classList.remove('hidden');
 }
 
-// Show error
-function showError(msg) {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('error').textContent = msg;
-    document.getElementById('error').classList.remove('hidden');
+function hideLoading() {
+    document.getElementById('loading-overlay').classList.add('hidden');
 }
 
-// Display result
-function showResult(data, isImage) {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('result').classList.remove('hidden');
+function showResult(result) {
+    currentResult = result;
+    const isFake = result.prediction === 'FAKE';
     
-    // Verdict
-    const verdictDiv = document.getElementById('verdict');
-    verdictDiv.className = 'verdict ' + (data.is_fake ? 'fake' : 'real');
-    verdictDiv.innerHTML = (data.is_fake ? '🚨 FAKE NEWS' : '✅ REAL NEWS');
+    document.getElementById('res-icon').textContent = isFake ? '🚨' : '✨';
+    document.getElementById('res-title').textContent = 'Analysis Complete';
+    document.getElementById('res-subtitle').textContent = isFake ? 'Fake news detected!' : 'This news appears credible';
     
-    // Confidence
-    document.getElementById('conf-value').textContent = data.confidence + '%';
-    document.getElementById('conf-bar').style.width = data.confidence + '%';
+    const verdictDiv = document.getElementById('res-verdict');
+    verdictDiv.className = 'result-verdict ' + (isFake ? 'fake' : 'real');
+    document.getElementById('res-badge').textContent = isFake ? 'FAKE NEWS' : 'REAL NEWS';
+    document.getElementById('res-confidence').textContent = (result.confidence || 0) + '%';
     
-    // Probabilities
-    document.getElementById('fake-p').textContent = data.fake_prob + '%';
-    document.getElementById('real-p').textContent = data.real_prob + '%';
+    document.getElementById('res-fake-bar').style.width = (result.fake_prob || 0) + '%';
+    document.getElementById('res-fake-p').textContent = (result.fake_prob || 0) + '%';
+    document.getElementById('res-real-bar').style.width = (result.real_prob || 0) + '%';
+    document.getElementById('res-real-p').textContent = (result.real_prob || 0) + '%';
     
-    // Extracted text (for images)
-    const extractedDiv = document.getElementById('extracted');
-    if (isImage && data.extracted_text) {
-        document.getElementById('extracted-text').textContent = data.extracted_text;
-        extractedDiv.classList.remove('hidden');
-    } else {
-        extractedDiv.classList.add('hidden');
-    }
+    document.getElementById('result-overlay').classList.remove('hidden');
+    hideLoading();
 }
 
-// Analyze text
-async function analyzeText() {
-    const title = document.getElementById('title').value.trim();
-    const content = document.getElementById('content').value.trim();
-    
-    if (!title && !content) {
-        showError('Please enter title or content');
+function closeResult() {
+    document.getElementById('result-overlay').classList.add('hidden');
+}
+
+async function analyzeFromHome() {
+    const url = document.getElementById('url-field').value.trim();
+    if (!url) {
+        switchInputMode('text');
         return;
     }
-    
+    // For URL, we'd need a scraper. For now, switch to text mode
+    switchPage('detect');
+}
+
+async function analyzeTextFromHome() {
+    const title = document.getElementById('home-title').value.trim();
+    const content = document.getElementById('home-content').value.trim();
+    if (!title && !content) return alert('Please enter some text');
+    // FIX: Send title and content SEPARATELY so api.py can handle them correctly
+    // Do NOT merge them here — merging changes how the model processes the input
+    await analyzeText(content, title);
+}
+
+async function analyzeFullText() {
+    const title = document.getElementById('detect-title').value.trim();
+    const content = document.getElementById('detect-content').value.trim();
+    if (!title && !content) return alert('Please enter some text');
+    // FIX: Send title and content SEPARATELY so api.py can handle them correctly
+    await analyzeText(content, title);
+}
+
+async function analyzeHomeImage() {
+    if (!selectedHomeImage) return;
+    await analyzeImage(selectedHomeImage);
+}
+
+async function analyzeFullImage() {
+    if (!selectedFullImage) return;
+    await analyzeImage(selectedFullImage);
+}
+
+async function analyzeText(text, title) {
     showLoading();
-    
     try {
-        const response = await fetch('/api/predict/text', {
+        const res = await fetch(`${API_BASE}/api/predict/text`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({text: title + ' ' + content})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, title })
         });
-        
-        const data = await response.json();
-        
-        if (data.error) {
-            showError(data.error);
-        } else {
-            showResult(data, false);
-        }
-    } catch (err) {
-        showError('Failed to analyze. Is server running?');
+        const data = await res.json();
+        if (data.error) { hideLoading(); return alert(data.error); }
+        showResult(data);
+        loadRecentChecks();
+    } catch (e) {
+        hideLoading();
+        alert('Server error. Is it running?');
     }
 }
 
-// Analyze image
-async function analyzeImage() {
-    if (!selectedImage) {
-        showError('Please select an image first');
+async function analyzeImage(image) {
+    showLoading();
+    try {
+        const res = await fetch(`${API_BASE}/api/predict/image`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image })
+        });
+        const data = await res.json();
+        if (data.error) { hideLoading(); return alert(data.error); }
+        showResult(data);
+        loadRecentChecks();
+    } catch (e) {
+        hideLoading();
+        alert('Server error. Is it running?');
+    }
+}
+
+// ===== RECENT CHECKS =====
+async function loadRecentChecks() {
+    try {
+        const res = await fetch(`${API_BASE}/api/history?limit=5`);
+        const data = await res.json();
+        renderRecentChecks(data.data || []);
+    } catch (e) {
+        console.log('Could not load recent checks');
+    }
+}
+
+function renderRecentChecks(items) {
+    const container = document.getElementById('recent-checks-list');
+    if (!items.length) {
+        container.innerHTML = '<div class="check-item empty"><p>No recent checks. Start analyzing news!</p></div>';
         return;
     }
-    
-    showLoading();
-    
+    container.innerHTML = items.map(item => {
+        const isFake = item.prediction === 'FAKE';
+        return `
+            <div class="check-item">
+                <span class="check-title">${escapeHtml(item.title)}</span>
+                <span class="check-badge ${isFake ? 'fake' : 'real'}">${isFake ? 'Fake News' : 'Real News'}</span>
+                <span class="check-score">${item.credibility_score}%</span>
+                <span class="check-time">${timeAgo(item.timestamp)}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+// ===== HISTORY =====
+async function loadHistory() {
     try {
-        const response = await fetch('/api/predict/image', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({image: selectedImage})
-        });
-        
-        const data = await response.json();
-        
-        if (data.error) {
-            showError(data.error);
-        } else {
-            showResult(data, true);
-        }
-    } catch (err) {
-        showError('Failed to analyze. Is server running?');
+        const res = await fetch(`${API_BASE}/api/history?filter_type=${currentFilter}`);
+        const data = await res.json();
+        updateHistoryStats(data.stats);
+        renderHistoryTable(data.data || []);
+    } catch (e) {
+        document.getElementById('history-table').innerHTML = '<div class="history-empty-state"><i class="fa-regular fa-folder-open"></i><p>Could not load history</p></div>';
     }
 }
 
-// Drag and drop support
+function updateHistoryStats(stats) {
+    document.getElementById('hist-total').textContent = stats.total_checks;
+    document.getElementById('hist-fake').textContent = stats.fake_detected;
+    document.getElementById('hist-real').textContent = stats.real_detected;
+    document.getElementById('hist-today').textContent = stats.today_checks;
+}
+
+function renderHistoryTable(items) {
+    const container = document.getElementById('history-table');
+    if (!items.length) {
+        container.innerHTML = '<div class="history-empty-state"><i class="fa-regular fa-folder-open"></i><p>No history yet. Start checking news!</p></div>';
+        return;
+    }
+    container.innerHTML = items.map(item => {
+        const isFake = item.prediction === 'FAKE';
+        return `
+            <div class="hist-item">
+                <div class="hist-icon ${isFake ? 'fake' : 'real'}">
+                    <i class="fa-solid ${isFake ? 'fa-triangle-exclamation' : 'fa-check'}"></i>
+                </div>
+                <div class="hist-details">
+                    <div class="hist-title">${escapeHtml(item.title)}</div>
+                    <div class="hist-meta">${item.source_type} • ${timeAgo(item.timestamp)}</div>
+                </div>
+                <span class="hist-badge ${isFake ? 'fake' : 'real'}">${isFake ? 'Fake' : 'Real'}</span>
+                <span class="hist-score">${item.credibility_score}%</span>
+                <button class="hist-delete" onclick="deleteHistoryItem('${item.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterHistory(type) {
+    currentFilter = type;
+    document.querySelectorAll('.h-filter').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    loadHistory();
+}
+
+async function deleteHistoryItem(id) {
+    if (!confirm('Delete this item?')) return;
+    try {
+        await fetch(`${API_BASE}/api/history/${id}`, { method: 'DELETE' });
+        loadHistory();
+    } catch (e) {}
+}
+
+async function clearAllHistory() {
+    if (!confirm('Clear all history?')) return;
+    try {
+        await fetch(`${API_BASE}/api/history/clear/all`, { method: 'DELETE' });
+        loadHistory();
+    } catch (e) {}
+}
+
+// ===== UTILITIES =====
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
+}
+
+function timeAgo(timestamp) {
+    if (!timestamp) return 'Unknown';
+    const date = new Date(timestamp);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + 'm ago';
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return hours + 'h ago';
+    const days = Math.floor(hours / 24);
+    if (days < 30) return days + 'd ago';
+    return date.toLocaleDateString();
+}
+
+function shareResult() {
+    if (!currentResult) return;
+    const text = currentResult.prediction === 'FAKE' 
+        ? '🚨 Detected fake news with TruthCheck!' 
+        : '✅ Verified real news with TruthCheck!';
+    navigator.clipboard?.writeText(text);
+    alert('Copied to clipboard!');
+}
+
+function showHowItWorks() { alert('How It Works:\n\n1. Paste news URL or text\n2. Our AI analyzes the content\n3. Get instant credibility score'); }
+function showAbout() { alert('TruthCheck v1.0\nAI-powered fake news detection'); }
+function showContact() { alert('Contact us at: support@truthcheck.ai'); }
+function toggleTheme() { alert('Theme toggle coming soon!'); }
+
+// ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-    const uploadBox = document.querySelector('.upload-box');
-    
-    uploadBox.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadBox.style.borderColor = '#667eea';
-    });
-    
-    uploadBox.addEventListener('dragleave', () => {
-        uploadBox.style.borderColor = '#ccc';
-    });
-    
-    uploadBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadBox.style.borderColor = '#ccc';
-        const files = e.dataTransfer.files;
-        if (files.length) {
-            document.getElementById('file-input').files = files;
-            handleImage({target: {files: files}});
-        }
-    });
+    loadRecentChecks();
 });
