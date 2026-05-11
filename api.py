@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FAKE NEWS DETECTOR API - With Live Data & Image Support
+FAKE NEWS DETECTOR API - With Live Data, Image Support & History
 """
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -17,6 +17,12 @@ import cv2
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+
+# Import history manager
+from history import (
+    init_history, save_analysis, get_history, 
+    get_history_stats, delete_history_item, clear_all_history
+)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
@@ -45,13 +51,10 @@ def clean_text(text):
     return ' '.join(words)
 
 def load_and_train_model():
-    """Load data and train model"""
     print("⏳ Loading data...")
     
-    # Load original data
     df_orig = pd.read_csv('fake_or_real_news.csv')
     
-    # Load live data if exists
     if os.path.exists('live_news_dataset.csv') and os.path.getsize('live_news_dataset.csv') > 0:
         df_live = pd.read_csv('live_news_dataset.csv')
         df_combined = pd.concat([df_orig, df_live], ignore_index=True)
@@ -61,14 +64,11 @@ def load_and_train_model():
         df_combined = df_orig
         print(f"✅ Loaded: {len(df_orig)} original (no live data yet)")
     
-    # Prepare
     X = df_combined['title'].fillna('') + ' ' + df_combined['text'].fillna('')
     y = df_combined['label'].apply(lambda x: 1 if str(x).upper() == 'FAKE' else 0)
     
-    # Clean
     X_clean = [clean_text(t) for t in X]
     
-    # Train
     print("⏳ Training model...")
     vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
     X_vec = vectorizer.fit_transform(X_clean)
@@ -81,6 +81,9 @@ def load_and_train_model():
 
 # Load model at startup
 model, vectorizer = load_and_train_model()
+
+# Init history
+init_history()
 
 def extract_text_from_image(image_data):
     try:
@@ -136,7 +139,27 @@ def predict_text():
     data = request.json
     if not data or 'text' not in data:
         return jsonify({'error': 'Missing text'}), 400
-    return jsonify(predict_news(data['text']))
+    
+    title = data.get('title', '')
+    text = data['text']
+    combined = (title + ' ' + text).strip()
+    
+    result = predict_news(combined)
+    
+    if 'error' not in result:
+        # Save to history
+        save_analysis(
+            title=title or text[:100],
+            content=text,
+            source_type='text',
+            prediction=result['prediction'],
+            credibility_score=result['confidence'],
+            fake_prob=result['fake_prob'],
+            real_prob=result['real_prob'],
+            red_flags=[]
+        )
+    
+    return jsonify(result)
 
 @app.route('/api/predict/image', methods=['POST'])
 def predict_image():
@@ -146,11 +169,53 @@ def predict_image():
     
     extracted = extract_text_from_image(data['image'])
     if not extracted:
-        return jsonify({'error': 'Could not extract text'}), 400
+        return jsonify({'error': 'Could not extract text from image'}), 400
     
     result = predict_news(extracted)
     result['extracted_text'] = extracted[:300] + '...' if len(extracted) > 300 else extracted
+    
+    if 'error' not in result:
+        # Save to history
+        save_analysis(
+            title=extracted[:100],
+            content=extracted,
+            source_type='image',
+            prediction=result['prediction'],
+            credibility_score=result['confidence'],
+            fake_prob=result['fake_prob'],
+            real_prob=result['real_prob'],
+            red_flags=[]
+        )
+    
     return jsonify(result)
+
+@app.route('/api/history', methods=['GET'])
+def history_list():
+    """Get history with optional filtering"""
+    limit = request.args.get('limit', 50, type=int)
+    filter_type = request.args.get('filter_type', 'all')
+    
+    records = get_history(limit=limit, filter_type=filter_type)
+    stats = get_history_stats()
+    
+    return jsonify({
+        'data': records,
+        'stats': stats
+    })
+
+@app.route('/api/history/<item_id>', methods=['DELETE'])
+def history_delete(item_id):
+    """Delete a history item"""
+    success = delete_history_item(item_id)
+    if success:
+        return jsonify({'status': 'success', 'message': 'Item deleted'})
+    return jsonify({'status': 'error', 'message': 'Item not found'}), 404
+
+@app.route('/api/history/clear/all', methods=['DELETE'])
+def history_clear():
+    """Clear all history"""
+    clear_all_history()
+    return jsonify({'status': 'success', 'message': 'History cleared'})
 
 @app.route('/api/health')
 def health():

@@ -1,56 +1,11 @@
 id,timestamp,title,content,source_type,prediction,credibility_score,fake_prob,real_prob,red_flags,is_deleted
-0c9fd40e,2026-05-10 19:57:00,Pakistan confirms Iran’s response to US proposal to end war,"Pakistan confirms Iran’s response to US proposal to end war Prime Minister Shehbaz Sharif said that he was briefed about receiving Iran's response to the US proposal to end the war.
+df453014,2026-05-11 09:24:49,Pakistan confirms lran’s response to US proposal to end war By: Web Desk Prime Minister Shehbaz Shar,"Pakistan confirms lran’s response to US proposal to end war By: Web Desk Prime Minister Shehbaz Sharif said that he was briefed about receiving Iran's response ta the US proposal to end the war “Right now, the Ficld Marshal [Asim Munir] informed me that [we have] received Iran's response. cannot go further into details,” the prime minister told the audience at an event to mark Marka: c-Hag in Islamabad He also highlighted Pakistan’s mediation role, noting that US and Iran were brought to the neg",image,REAL,56.86,43.14,56.86,[],False
+9d0f6a11,2026-05-11 09:25:03,Che Baily i Martians invade earth,Che Baily i Martians invade earth,image,FAKE,78.01,78.01,21.99,[],False
+f4b438d0,2026-05-11 09:26:27,From Marqa-e-Haq to Marqa-e-Taraqqi,"Marqa-e-Haq was a defining moment in Pakistan’s journey. It was a moment when Pakistan affirmed its sovereignty with clarity, courage and dignity. One year later, Pakistan stands not only as a nation that defended its sovereignty, but also as a country actively committed to building peace in the region and beyond.
 
-“Right now, the Field Marshal [Asim Munir] informed me that [we have] received Iran’s response. I cannot go further into details,” the prime minister told the audience at an event to mark Marka-e-Haq in Islamabad.
+In the face of the Iran-US-Israel conflict and rising tensions across the Middle East, Pakistan has acted as a responsible voice of restraint, dialogue and de-escalation. Through acti",text,FAKE,50.49,50.49,49.51,[],False
+6101651e,2026-05-11 09:27:58,Pentagon chief rejects senator’s warning over dwindling US munitions,"US Defence Secretary Pete Hegseth has denied claims by Democratic Senator Mark Kelly, a retired Navy captain, who said US munitions have been “depleted” by the war on Iran.
 
-He also highlighted Pakistan’s mediation role, noting that US and Iran were brought to the negotiating",text,REAL,77.37,22.63,77.37,[],True
-c5731d5e,2026-05-10 20:02:48,Pakistan confirms Iran’s response to US proposal to end war,"Pakistan confirms Iran’s response to US proposal to end war Prime Minister Shehbaz Sharif said that he was briefed about receiving Iran's response to the US proposal to end the war.
+“‘Captain’ Mark Kelly strikes again,” Hegseth wrote on X.
 
-“Right now, the Field Marshal [Asim Munir] informed me that [we have] received Iran’s response. I cannot go further into details,” the prime minister told the audience at an event to mark Marka-e-Haq in Islamabad.
-
-He also highlighted Pakistan’s mediation role, noting that US and Iran were brought to the negotiating",text,REAL,77.37,22.63,77.37,[],True
-1ebbfb3c,2026-05-10 20:07:16,Image Analysis,"Pakistan confirms lran’s response to US proposal to end war By: Web Desk Prime Minister Shehbaz Sharif said that he was briefed about receiving Iran's response to the US proposal to end the war “Right now, the Ficld Marshal [Asim Munir] informed me that [we have] received Iran's response | cannot go further into details,” the prime minister told the audience at an event to mark Marka- c-Haq in Islamabad He also highlighted Pakistan's mediation role, noting that US and Iran were brought to the ne",image,REAL,77.46,22.54,77.46,[],True
-5fa8dae1,2026-05-10 21:03:15,Trump says US would need two weeks to hit all Iran targets,"Trump says US would need two weeks to hit all Iran targets US President Donald Trump has said in an interview aired on Sunday that it would only take two weeks to hit ""every single target"" in Iran, adding that the Islamic republic was ""militarily defeated.""
-
-In the interview with independent journalist Sharyl Attkisson, which was recorded last week, he also called Nato a ""paper tiger"" and accused Washington's allies of failing to assist in the campaign against Tehran.
-
-The comments come as Iran ",text,REAL,71.17,28.83,71.17,[],True
-1dcaf23a,2026-05-10 21:04:13,Image Analysis,"Sunday May 10 2026 | 08:57 PM Trump says US would need two weeks to hit all Iran targets By: AFP US President Donald Trump has said in an interview aired on Sunday that it would only take two weeks to hit ""every single target"" in Iran, adding that the Islamic republic was ""militarily defeated.” In the interview with independent journalist Sharyl Attkisson, which was recorded last week, he also called Nato a ""paper tiger"" and accused Washington's allies of failing to assist in the campaign agains",image,REAL,71.41,28.59,71.41,[],True
-579edf62,2026-05-10 21:07:02,"Any new aggression will have wider consequences, Asim Munir warns enemies of Pakistan","Any new aggression will have wider consequences, Asim Munir warns enemies of Pakistan Chief of Defence Forces Field Marshal Syed Asim Munir said the day marked a moment of pride for the nation as Pakistan commemorated the first anniversary of the Marka-e-Haq (Battle of Truth).
-
-Addressing a ceremony at General Headquarters, CDF Asim Munir said Pakistan had been granted victory by Almighty Allah during the conflict a year ago and had delivered a decisive response to what he described as Indian ag",text,REAL,79.87,20.13,79.87,[],True
-df01cd9e,2026-05-10 21:08:53,Field Marshal Asim Munir Claims Pakistan Developed “Invisible Jets” During Marka-e-Haq Anniversary Ceremony,"Field Marshal Asim Munir Claims Pakistan Developed “Invisible Jets” During Marka-e-Haq Anniversary Ceremony RAWALPINDI: Speaking at a highly charged ceremony at General Headquarters, Chief of Defence Forces Field Marshal Syed Asim Munir claimed that Pakistan had secretly deployed “next-generation invisible fighter jets” during the Marka-e-Haq conflict last year.
-
-According to the fictional statement, the aircraft allegedly entered enemy airspace undetected and returned after “confusing enemy rad",text,REAL,77.08,22.92,77.08,[],True
-8be6ecca,2026-05-10 21:09:27,Pakistan attached on Iran,Pakistan attached on Iran Pakistan has been launched attack on IRan,text,REAL,75.54,24.46,75.54,[],True
-191e3afc,2026-05-10 21:12:03,Image Analysis,"LIVE breakyourownnews.com BREAKING NEWS PAKISTAN ATTACKED ON IRAN PEE ""IS THIS REALLY NEWS?” ASKS COMMENTER | 5 MILLION RETWEETS IN 1 HOUR ALREA",image,REAL,74.35,25.65,74.35,[],True
-9b106a11,2026-05-10 21:17:03,Image Analysis,"LIVE breakyourownnews.com BREAKING NEWS PAKISTAN ATTACKED ON IRAN PEE ""IS THIS REALLY NEWS?” ASKS COMMENTER | 5 MILLION RETWEETS IN 1 HOUR ALREA",image,REAL,74.35,25.65,74.35,[],True
-3560d2a7,2026-05-10 21:17:45,Image Analysis,Che Baily i Sunday. August 30. 205 Martians invade earth donatd tom is died Ret,image,REAL,78.05,21.95,78.05,[],True
-cbc33a36,2026-05-10 21:18:13,Image Analysis,"ON } PAKISTAN National Identity Card 5 * ISLAMIC REPUBLIC OF PAKISTAN "" . Name ~~ Muhammad Arman | SLAF | Muhammad Ashig Ali a Sf vt M __ Pakistan . 33102-7545970-7 ; 10.12.2002 Date of Issue 4s ofepiny Exe 01.02.2021 | 01.02.2031 “aia Baneare",image,REAL,80.07,19.93,80.07,[],True
-46ef542e,2026-05-10 21:22:10,Pakistan attached on Iran,Pakistan attached on Iran Pakistan has been launched attack on Iran. I have listen this news on my instagram,text,REAL,76.04,23.96,76.04,[],True
-3b5f4c85,2026-05-10 21:57:41,Trump says US would need two weeks to hit all Iran targets,"Trump says US would need two weeks to hit all Iran targets US President Donald Trump has said in an interview aired on Sunday that it would only take two weeks to hit ""every single target"" in Iran, adding that the Islamic republic was ""militarily defeated.""
-
-In the interview with independent journalist Sharyl Attkisson, which was recorded last week, he also called Nato a ""paper tiger"" and accused Washington's allies of failing to assist in the campaign against Tehran.
-
-The comments come as Iran ",text,REAL,71.17,28.83,71.17,[],True
-84dd94b6,2026-05-10 22:00:51,Trump says US would need two weeks to hit all Iran targets,"Trump says US would need two weeks to hit all Iran targets US President Donald Trump has said in an interview aired on Sunday that it would only take two weeks to hit ""every single target"" in Iran, adding that the Islamic republic was ""militarily defeated.""
-
-In the interview with independent journalist Sharyl Attkisson, which was recorded last week, he also called Nato a ""paper tiger"" and accused Washington's allies of failing to assist in the campaign against Tehran.
-
-The comments come as Iran ",text,REAL,71.17,28.83,71.17,[],True
-15ae0bf1,2026-05-10 22:01:16,Image Analysis,"Sunday May 10 2026 | 08:57 PM Trump says US would need two weeks to hit all Iran targets By: AFP US President Donald Trump has said in an interview aired on Sunday that it would only take two weeks to hit ""every single target"" in Iran, adding that the Islamic republic was ""militarily defeated.” In the interview with independent journalist Sharyl Attkisson, which was recorded last week, he also called Nato a ""paper tiger"" and accused Washington's allies of failing to assist in the campaign agains",image,REAL,71.41,28.59,71.41,[],True
-a7af0587,2026-05-10 22:03:49,trum has beeen died,trum has beeen died donal trump usa presisdent has been died.I'v listen this news on instagram,text,REAL,76.28,23.72,76.28,[],True
-a72152cb,2026-05-10 23:26:48,Trum was died,Trum was died I saw a post on instagram and it was shocked that donald trum is died during iran america war.,text,REAL,75.04,24.96,75.04,[],True
-b1f776a3,2026-05-10 23:31:02,Trum was died,Trum was died I saw a post on instagram and it was shocked that donald trum is died during iran america war.,text,REAL,75.04,24.96,75.04,[],True
-43e62b01,2026-05-10 23:46:54,Trum was died,Trum was died I saw a post on instagram and it was shocked that donald trum is died during iran america war.,text,REAL,74.08,25.92,74.08,[],True
-0c953949,2026-05-10 23:57:28,Trum was died,Trum was died I saw a post on instagram and it was shocked that donald trum is died during iran america war.,text,REAL,74.08,25.92,74.08,[],True
-77f7fd6a,2026-05-11 00:00:14,India attacked on israel,India attacked on israel india launce 100 misles on israel,text,REAL,76.56,23.44,76.56,"[""Too short to be verified news""]",False
-d0f04c36,2026-05-11 08:07:40,trum has been died,donald trum has been died in iran usa war.,text,REAL,75.16,24.84,75.16,[],False
-3254b42e,2026-05-11 08:11:56,Pakistan attacked on USA,last night pakistan has been lauch atomic attack on america.,text,REAL,77.46,22.54,77.46,[],False
-6c07ff06,2026-05-11 08:14:12,pakistan has been lauch attack on usa,last night pakistan has been launched 10 atomic attacks on USA.,text,REAL,77.59,22.41,77.59,[],False
-7f7ad6cb,2026-05-11 08:14:25,pakistan has been lauch attack on usa,last night pakistan has been launched 10 atomic attacks on USA.,text,REAL,77.59,22.41,77.59,[],False
-44848c83,2026-05-11 08:15:16,pakistan has been lauch attack on usa,last night pakistan has been launched 10 atomic attacks on USA.,text,REAL,77.59,22.41,77.59,[],False
-b05e896a,2026-05-11 08:17:24,donald trump has been died.,last night president donald trump has been passed away. I saw this new on instagram.,text,REAL,76.57,23.43,76.57,[],False
-807726e2,2026-05-11 08:19:28,Trump has been died.,I saw the post on instagram as President donald trump has been died.,text,REAL,73.93,26.07,73.93,[],False
-78717ff9,2026-05-11 08:31:22,trump is died.,last night donald trump is martryed by terrorist.,text,REAL,75.26,24.74,75.26,[],False
-86f5a918,2026-05-11 08:31:27,trump is died.,last night donald trump is martryed by terrorist.,text,REAL,75.26,24.74,75.26,[],False
+“Now he’s blabbing on TV (falsely and dumbly) about a *CLASSIFIED* Pentagon briefing he received.”",text,REAL,52.62,47.38,52.62,[],False
